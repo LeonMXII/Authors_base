@@ -46,15 +46,41 @@ session.add_all([a_1, a_2, a_3, t_1, t_2, t_3, t_4, t_5, t_6, sh_1, sh_2, st_1, 
                  sa_1, sa_2, sa_3, sa_4, sa_5, sa_6])
 session.commit()
 
-find = input("Введите автора: ")
+def get_shops(find):
+    sub = session.query(Book.title, Shop.name, Sale.price, Sale.date_sale).select_from(Shop).\
+        join(Stock).\
+        join(Book).\
+        join(Publisher).\
+        join(Sale)
+    if find.isdigit():
+        all_query = session.query(Book.title, Shop.name, Sale.price, Sale.date_sale).filter(Publisher.id == sub).all()
+    else:
+        all_query = session.query(Book.title, Shop.name, Sale.price, Sale.date_sale).filter(Publisher.name == sub).all()
+    for book, shop, price, sale in all_query:
+        print(f"{book: <40} | {shop: <10} | {price: <8} | {sale.strftime('%d-%m-%Y')}")
 
-subq = session.query(Book.title, Shop.name, Sale.price, Sale.date_sale)
-subq = subq.join(Publisher).filter(Publisher.name == find)
-subq = subq.join(Stock)
-subq = subq.join(Shop)
-subq = subq.join(Sale)
-all_query = subq.all()
+if __name__ == "__main__":
+    finds = input("Введите, пожалуйста, имя или идентификатор автора: ")
+    get_shops(finds)
 
-for finds in all_query:
-    print(f"| {finds[0]} | {finds[1]} | {finds[2]} | {finds[3]} |")
 session.close()
+
+
+
+
+
+
+
+
+# find = input("Введите автора: ")
+#
+# subq = session.query(Book.title, Shop.name, Sale.price, Sale.date_sale)
+# subq = subq.join(Publisher).filter(Publisher.name == find)
+# subq = subq.join(Stock)
+# subq = subq.join(Shop)
+# subq = subq.join(Sale)
+# all_query = subq.all()
+#
+# for finds in all_query:
+#     print(f"| {finds[0]} | {finds[1]} | {finds[2]} | {finds[3]} |")
+# session.close()
