@@ -4,6 +4,8 @@ import os
 from sqlalchemy.orm import sessionmaker
 from models import create_tables, Publisher, Book, Stock, Shop, Sale
 
+
+
 login = os.getenv("login")
 
 DSN = login
@@ -53,11 +55,11 @@ def get_shops(find):
         join(Publisher).\
         join(Sale)
     if find.isdigit():
-        all_query = session.query(Book.title, Shop.name, Sale.price, Sale.date_sale).filter(Publisher.id == sub).all()
+        all_query = sub.filter(Publisher.id == finds).all()
     else:
-        all_query = session.query(Book.title, Shop.name, Sale.price, Sale.date_sale).filter(Publisher.name == sub).all()
+        all_query = sub.filter(Publisher.name == finds).all()
     for book, shop, price, sale in all_query:
-        print(f"{book: <40} | {shop: <10} | {price: <8} | {sale.strftime('%d-%m-%Y')}")
+        print(f"{book: <20} | {shop: <10} | {price: <6} | {sale}")
 
 if __name__ == "__main__":
     finds = input("Введите, пожалуйста, имя или идентификатор автора: ")
@@ -72,15 +74,3 @@ session.close()
 
 
 
-# find = input("Введите автора: ")
-#
-# subq = session.query(Book.title, Shop.name, Sale.price, Sale.date_sale)
-# subq = subq.join(Publisher).filter(Publisher.name == find)
-# subq = subq.join(Stock)
-# subq = subq.join(Shop)
-# subq = subq.join(Sale)
-# all_query = subq.all()
-#
-# for finds in all_query:
-#     print(f"| {finds[0]} | {finds[1]} | {finds[2]} | {finds[3]} |")
-# session.close()
